@@ -1,4 +1,4 @@
-import { fetchAllPrices, LABELS } from "@/lib/fred";
+import { fetchAllPrices, LABELS, type BeefPrices } from "@/lib/fred";
 import PriceCard from "@/components/PriceCard";
 import { OrganizationSchema } from "@/components/JsonLd";
 import type { Metadata } from "next";
@@ -12,29 +12,26 @@ export const metadata: Metadata = {
 
 export const revalidate = 86400;
 
-// Sample data for the hero price cards (to match mockup exactly)
-const heroPrices = [
-  {
-    name: "Ground Beef (80/20)",
-    current: 6.89,
-    previous: 6.67,
-  },
-  {
-    name: "Choice Ribeye",
-    current: 14.49,
-    previous: 13.82,
-  },
-  {
-    name: "USDA Choice T-Bone",
-    current: 11.29,
-    previous: 10.98,
-  },
-  {
-    name: "Chicken Breast (boneless)",
-    current: 4.12,
-    previous: 4.2,
-  },
-];
+// Helper to get current and previous price from FRED data
+function getPriceData(prices: BeefPrices, key: string) {
+  const data = prices[key];
+  if (!data || data.length < 2) {
+    return { current: 0, previous: 0 };
+  }
+  const current = data[data.length - 1]?.value ?? 0;
+  const previous = data[data.length - 2]?.value ?? current;
+  return { current, previous };
+}
+
+// Get formatted date from the latest price data
+function getLatestDate(prices: BeefPrices): string {
+  const firstKey = Object.keys(prices)[0];
+  if (!firstKey || !prices[firstKey]?.length) return "Current Week";
+  const latestDate = prices[firstKey][prices[firstKey].length - 1]?.date;
+  if (!latestDate) return "Current Week";
+  const date = new Date(latestDate);
+  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
 
 const trendingArticles = [
   {
@@ -123,17 +120,41 @@ const featuredArticles = [
   },
 ];
 
-const priceTableData = [
-  { cut: "Ground Beef (80/20)", price: 6.89, change: 1.12, pct: 19.4 },
-  { cut: "USDA Choice Ribeye", price: 14.49, change: 2.31, pct: 19.0 },
-  { cut: "USDA Choice T-Bone", price: 11.29, change: 1.67, pct: 17.4 },
-  { cut: "Top Sirloin", price: 9.18, change: 1.23, pct: 15.5 },
-  { cut: "Chuck Roast", price: 7.44, change: 0.89, pct: 13.6 },
-  { cut: "Beef Patties (frozen, per lb)", price: 5.92, change: 0.71, pct: 13.6 },
-];
+// priceTableData is now built dynamically from live FRED data in the component
 
 export default async function HomePage() {
   const prices = await fetchAllPrices();
+  const latestDate = getLatestDate(prices);
+  
+  // Build hero price cards from live FRED data
+  const heroPrices = [
+    { name: "Ground Beef", key: "ground_beef" },
+    { name: "Sirloin Steak", key: "sirloin_steak" },
+    { name: "Round Roast", key: "round_roast" },
+    { name: "Ground Chuck", key: "ground_chuck" },
+  ].map(item => {
+    const { current, previous } = getPriceData(prices, item.key);
+    return {
+      name: LABELS[item.key] || item.name,
+      current,
+      previous,
+    };
+  });
+
+  // Build price table from live FRED data
+  const liveTableData = Object.entries(prices).map(([key, data]) => {
+    const current = data[data.length - 1]?.value ?? 0;
+    const yearAgo = data[0]?.value ?? current;
+    const change = current - yearAgo;
+    const pct = yearAgo > 0 ? ((change / yearAgo) * 100) : 0;
+    return {
+      cut: LABELS[key] || key,
+      price: current,
+      change: Math.abs(change),
+      pct: Math.abs(pct),
+      isUp: change >= 0,
+    };
+  });
 
   return (
     <>
@@ -143,7 +164,7 @@ export default async function HomePage() {
       <section className="hero-gradient py-12 px-10 text-white">
         <div className="max-w-[1100px] mx-auto">
           <p className="text-xs text-[#8aa8c4] font-sans uppercase tracking-wider mb-2">
-            Week of March 16, 2026 &bull; Source: USDA ERS &amp; BLS
+            Data as of {latestDate} &bull; Source: USDA ERS &amp; BLS
           </p>
           <h1 className="text-4xl lg:text-[38px] font-bold tracking-tight mb-2">
             U.S. Beef <span className="text-gold">Price Index</span>
@@ -231,7 +252,7 @@ export default async function HomePage() {
 
           {/* Price Table */}
           <h3 className="text-xl font-bold text-foreground mt-8 mb-4">
-            The Numbers: March 2026 Retail Beef Prices
+            The Numbers: Current Retail Beef Prices
           </h3>
           <div className="overflow-x-auto mb-2">
             <table className="w-full border-collapse font-sans text-sm">
@@ -244,7 +265,7 @@ export default async function HomePage() {
                     National Avg. ($/lb)
                   </th>
                   <th className="text-left px-3.5 py-2.5 font-semibold text-xs uppercase tracking-wide">
-                    vs. March 2025
+                    vs. Year Ago
                   </th>
                   <th className="text-left px-3.5 py-2.5 font-semibold text-xs uppercase tracking-wide">
                     12-Month Change
@@ -252,7 +273,7 @@ export default async function HomePage() {
                 </tr>
               </thead>
               <tbody>
-                {priceTableData.map((row) => (
+                {liveTableData.map((row) => (
                   <tr
                     key={row.cut}
                     className="border-b border-border hover:bg-[#f8fafe] transition"
@@ -263,11 +284,11 @@ export default async function HomePage() {
                     <td className="px-3.5 py-2.5 font-bold text-foreground">
                       ${row.price.toFixed(2)}
                     </td>
-                    <td className="px-3.5 py-2.5 font-semibold text-price-up">
-                      +${row.change.toFixed(2)}
+                    <td className={`px-3.5 py-2.5 font-semibold ${row.isUp ? "text-price-up" : "text-price-down"}`}>
+                      {row.isUp ? "+" : "-"}${row.change.toFixed(2)}
                     </td>
-                    <td className="px-3.5 py-2.5 font-semibold text-price-up">
-                      +{row.pct.toFixed(1)}%
+                    <td className={`px-3.5 py-2.5 font-semibold ${row.isUp ? "text-price-up" : "text-price-down"}`}>
+                      {row.isUp ? "+" : "-"}{row.pct.toFixed(1)}%
                     </td>
                   </tr>
                 ))}
