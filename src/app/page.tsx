@@ -68,10 +68,10 @@ const trendingArticles = [
 
 const companyScores = [
   { name: "ButcherBox", score: 8.4, color: "green" },
-  { name: "Good Ranchers", score: 8.1, color: "green" },
+  { name: "Backyard Butchers", score: 8.1, color: "green" },
   { name: "Crowd Cow", score: 7.9, color: "green" },
   { name: "Omaha Steaks", score: 7.2, color: "yellow" },
-  { name: "Backyard Butchers", score: 6.8, color: "yellow" },
+  { name: "Good Ranchers", score: 6.8, color: "yellow" },
   { name: "Rastelli's", score: 6.5, color: "yellow" },
 ];
 
