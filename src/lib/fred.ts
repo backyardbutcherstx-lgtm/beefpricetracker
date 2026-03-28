@@ -11,19 +11,19 @@ export interface BeefPrices {
 }
 
 export const SERIES: Record<string, string> = {
-  ground_beef: "APU0000FC3101",
-  ground_chuck: "APU0000703112",
-  round_roast: "APU0000703111",
-  sirloin_steak: "APU0000703613",
-  all_roasts: "APU0000FF1101",
+  ground_beef: "APU0000703112",      // Ground Beef, 100%, per lb
+  all_steaks: "APU0000FC3101",       // All Uncooked Beef Steaks, per lb
+  round_roast: "APU0000703111",      // Beef Round Roast, USDA Choice, per lb
+  sirloin_steak: "APU0000703613",    // Beef Sirloin Steak, per lb
+  chuck_roast: "APU0000703311",      // Beef Chuck Roast, USDA Choice, per lb
 };
 
 export const LABELS: Record<string, string> = {
-  ground_beef: "Ground Beef",
-  ground_chuck: "Ground Chuck",
+  ground_beef: "Ground Beef (100%)",
+  all_steaks: "All Beef Steaks",
   round_roast: "Round Roast",
   sirloin_steak: "Sirloin Steak",
-  all_roasts: "Beef Roasts (Avg)",
+  chuck_roast: "Chuck Roast",
 };
 
 export async function fetchSeries(seriesId: string): Promise<PricePoint[]> {
