@@ -129,9 +129,9 @@ export default async function HomePage() {
   // Build hero price cards from live FRED data
   const heroPrices = [
     { name: "Ground Beef", key: "ground_beef" },
-    { name: "Sirloin Steak", key: "sirloin_steak" },
+    { name: "All Beef Steaks", key: "all_steaks" },
     { name: "Round Roast", key: "round_roast" },
-    { name: "Ground Chuck", key: "ground_chuck" },
+    { name: "Sirloin Steak", key: "sirloin_steak" },
   ].map(item => {
     const { current, previous } = getPriceData(prices, item.key);
     return {
