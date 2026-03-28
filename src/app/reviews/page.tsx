@@ -1,4 +1,3 @@
-import TrustScore from "@/components/TrustScore";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -82,56 +81,60 @@ const companies = [
   },
 ];
 
+function getScoreColor(score: number) {
+  if (score >= 8) return "text-score-green";
+  if (score >= 6) return "text-gold";
+  return "text-score-red";
+}
+
 export default function ReviewsPage() {
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold text-[#1B2A4A] mb-2">
+    <div className="max-w-[1100px] mx-auto px-10 py-12">
+      <h1 className="text-3xl font-bold text-navy mb-2">
         Online Meat Company Reviews
       </h1>
-      <p className="text-gray-600 mb-8">
+      <p className="text-muted-foreground font-sans mb-8">
         Independent trust scores based on six transparent criteria. No company
         pays for placement or ratings.
       </p>
 
       {/* Scoring Criteria */}
-      <div className="bg-[#F2F7FB] rounded-lg p-6 mb-10">
-        <h2 className="font-semibold text-[#1B2A4A] mb-3">
-          How We Score Companies
-        </h2>
-        <div className="grid md:grid-cols-3 gap-4 text-sm">
+      <div className="bg-muted rounded-lg p-6 mb-10">
+        <h2 className="font-semibold text-navy mb-3">How We Score Companies</h2>
+        <div className="grid md:grid-cols-3 gap-4 text-sm font-sans">
           <div>
-            <strong>Price Transparency (25%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">Price Transparency (25%)</strong>
+            <p className="text-muted-foreground">
               Are prices clearly listed? Any hidden fees?
             </p>
           </div>
           <div>
-            <strong>USDA Grade Disclosure (20%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">USDA Grade Disclosure (20%)</strong>
+            <p className="text-muted-foreground">
               Do they tell you the beef grade?
             </p>
           </div>
           <div>
-            <strong>Shipping & Handling (15%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">Shipping & Handling (15%)</strong>
+            <p className="text-muted-foreground">
               Cost, speed, and packaging quality.
             </p>
           </div>
           <div>
-            <strong>Customer Reviews (15%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">Customer Reviews (15%)</strong>
+            <p className="text-muted-foreground">
               Aggregate score across platforms.
             </p>
           </div>
           <div>
-            <strong>Return/Refund Policy (15%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">Return/Refund Policy (15%)</strong>
+            <p className="text-muted-foreground">
               How easy is it to get a refund?
             </p>
           </div>
           <div>
-            <strong>Source Transparency (10%)</strong>
-            <p className="text-gray-600">
+            <strong className="text-foreground">Source Transparency (10%)</strong>
+            <p className="text-muted-foreground">
               Do they say where the beef comes from?
             </p>
           </div>
@@ -145,20 +148,24 @@ export default function ReviewsPage() {
           .map((co) => (
             <div
               key={co.name}
-              className="bg-white rounded-lg border border-gray-200 p-6"
+              className="bg-background rounded-lg border border-border p-6"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-[#1B2A4A]">
-                  {co.name}
-                </h3>
+                <h3 className="text-xl font-bold text-navy">{co.name}</h3>
                 <div className="flex items-center gap-2 mt-2 md:mt-0">
-                  <span className="text-3xl font-bold text-[#2E75B6]">
+                  <span
+                    className={`text-3xl font-bold ${getScoreColor(co.score)}`}
+                  >
                     {co.score.toFixed(1)}
                   </span>
-                  <span className="text-gray-400 text-sm">/ 10</span>
+                  <span className="text-muted-foreground text-sm font-sans">
+                    / 10
+                  </span>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">{co.summary}</p>
+              <p className="text-muted-foreground font-sans mb-4">
+                {co.summary}
+              </p>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                 {[
                   { label: "Price", val: co.priceTransparency },
@@ -169,10 +176,10 @@ export default function ReviewsPage() {
                   { label: "Source", val: co.sourceTransparency },
                 ].map((cat) => (
                   <div key={cat.label} className="text-center">
-                    <div className="text-lg font-bold text-[#1B2A4A]">
-                      {cat.val}
+                    <div className="text-lg font-bold text-navy">{cat.val}</div>
+                    <div className="text-xs text-muted-foreground font-sans">
+                      {cat.label}
                     </div>
-                    <div className="text-xs text-gray-400">{cat.label}</div>
                   </div>
                 ))}
               </div>
@@ -180,9 +187,9 @@ export default function ReviewsPage() {
           ))}
       </div>
 
-      <div className="bg-[#F2F7FB] rounded-lg p-6 mt-10">
-        <h3 className="font-semibold text-[#1B2A4A] mb-2">Our Promise</h3>
-        <p className="text-sm text-gray-600">
+      <div className="bg-muted rounded-lg p-6 mt-10">
+        <h3 className="font-semibold text-navy mb-2">Our Promise</h3>
+        <p className="text-sm text-muted-foreground font-sans">
           BeefPriceTracker.org does not accept payment for reviews or ratings.
           All scores are based on publicly available information and consistent
           evaluation criteria applied equally to every company.

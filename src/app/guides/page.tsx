@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Beef Buying Guides — Expert Tips & Price Data",
@@ -53,11 +54,9 @@ const guides = [
 
 export default function GuidesPage() {
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold text-[#1B2A4A] mb-2">
-        Beef Buying Guides
-      </h1>
-      <p className="text-gray-600 mb-8">
+    <div className="max-w-[1100px] mx-auto px-10 py-12">
+      <h1 className="text-3xl font-bold text-navy mb-2">Beef Buying Guides</h1>
+      <p className="text-muted-foreground font-sans mb-8">
         Data-backed guides to help you buy beef smarter. Whether you are buying
         for a family BBQ or stocking a freezer, we have got you covered.
       </p>
@@ -66,19 +65,23 @@ export default function GuidesPage() {
         {guides.map((guide) => (
           <article
             key={guide.title}
-            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition"
+            className="bg-background rounded-lg border border-border p-6 hover:shadow-md transition"
           >
             <div className="flex items-center gap-2 mb-3">
-              <span className="bg-[#F2F7FB] text-[#2E75B6] text-xs font-medium px-2 py-1 rounded">
+              <span className="bg-muted text-navy text-xs font-medium font-sans px-2 py-1 rounded">
                 {guide.category}
               </span>
-              <span className="text-xs text-gray-400">{guide.readTime}</span>
+              <span className="text-xs text-muted-foreground font-sans">
+                {guide.readTime}
+              </span>
             </div>
-            <h2 className="text-lg font-semibold text-[#1B2A4A] mb-2">
+            <h2 className="text-lg font-semibold text-navy mb-2">
               {guide.title}
             </h2>
-            <p className="text-sm text-gray-600 mb-3">{guide.description}</p>
-            <span className="text-[#E8792F] text-sm font-medium">
+            <p className="text-sm text-muted-foreground font-sans mb-3">
+              {guide.description}
+            </p>
+            <span className="text-gold text-sm font-medium font-sans">
               Read guide →
             </span>
           </article>
