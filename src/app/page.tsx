@@ -434,7 +434,7 @@ export default async function HomePage() {
             <input
               type="email"
               placeholder="Your email address"
-              className="w-full px-3 py-2.5 rounded text-sm font-sans text-foreground mb-2 border-none focus:outline-none"
+              className="w-full px-3 py-2.5 rounded text-sm font-sans text-foreground mb-2 border-none focus:outline-none bg-white"
             />
             <button className="w-full bg-gold text-white font-bold font-sans py-2.5 rounded text-sm hover:bg-[#c4940f] transition">
               Subscribe Free
