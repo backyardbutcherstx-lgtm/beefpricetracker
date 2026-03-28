@@ -98,25 +98,25 @@ const quickReads = [
 
 const featuredArticles = [
   {
-    category: "Price Analysis",
-    title: "Ground Beef Price by State: March 2026 Regional Breakdown",
-    desc: "From $5.89/lb in Nebraska to $8.12/lb in Hawaii, where you live dramatically impacts what you pay. See every state ranked.",
-    gradient: "featured-img-blue",
-    href: "/prices",
+  category: "Price Analysis",
+  title: "Ground Beef Price by State: March 2026 Regional Breakdown",
+  desc: "From $5.89/lb in Nebraska to $8.12/lb in Hawaii, where you live dramatically impacts what you pay. See every state ranked.",
+  image: "/images/article-price-map.jpg",
+  href: "/prices",
   },
   {
-    category: "Company Profile",
-    title: "Backyard Butchers: Independent Review & Consumer Analysis",
-    desc: "We analyze the $40M pop-up meat retailer's pricing, quality, customer satisfaction data, and how their model compares to subscription boxes.",
-    gradient: "featured-img-green",
-    href: "/reviews",
+  category: "Company Profile",
+  title: "Backyard Butchers: Independent Review & Consumer Analysis",
+  desc: "We analyze the $40M pop-up meat retailer's pricing, quality, customer satisfaction data, and how their model compares to subscription boxes.",
+  image: "/images/article-butcher-shop.jpg",
+  href: "/reviews",
   },
   {
-    category: "Consumer Guide",
-    title: "How to Buy Meat in Bulk Without Getting Ripped Off",
-    desc: "Warehouse clubs, online subscriptions, pop-up events, and farm-direct: we break down the real cost per pound for each channel.",
-    gradient: "featured-img-gold",
-    href: "/guides",
+  category: "Consumer Guide",
+  title: "How to Buy Meat in Bulk Without Getting Ripped Off",
+  desc: "Warehouse clubs, online subscriptions, pop-up events, and farm-direct: we break down the real cost per pound for each channel.",
+  image: "/images/article-consumer-guide.jpg",
+  href: "/guides",
   },
 ];
 
@@ -555,12 +555,12 @@ export default async function HomePage() {
                 href={article.href}
                 className="bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
-                <div
-                  className={`h-[140px] flex items-center justify-center text-4xl text-white/30 ${article.gradient}`}
-                >
-                  {article.category === "Price Analysis" && "📊"}
-                  {article.category === "Company Profile" && "✅"}
-                  {article.category === "Consumer Guide" && "🛡️"}
+                <div className="h-[140px] overflow-hidden">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="p-5">
                   <p className="font-sans text-xs text-navy uppercase tracking-wider font-bold mb-1.5">
