@@ -50,6 +50,16 @@ export async function fetchAllPrices(): Promise<BeefPrices> {
   for (const [name, id] of Object.entries(SERIES)) {
     results[name] = await fetchSeries(id);
   }
+  console.log("[v0] FRED API Results:", JSON.stringify({
+    hasApiKey: !!FRED_API_KEY,
+    seriesCount: Object.keys(results).length,
+    sampleData: Object.entries(results).map(([key, data]) => ({
+      series: key,
+      latestValue: data[data.length - 1]?.value,
+      latestDate: data[data.length - 1]?.date,
+      dataPoints: data.length
+    }))
+  }, null, 2));
   return results;
 }
 
