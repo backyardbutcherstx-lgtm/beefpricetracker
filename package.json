@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "chart.js": "^4.5.1",
     "date-fns": "^4.1.0",
     "gray-matter": "^4.0.3",
