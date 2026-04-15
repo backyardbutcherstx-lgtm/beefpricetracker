@@ -11,6 +11,7 @@ type Article = {
   title: string;
   slug: string;
   author: string;
+  body: string | null;
   status: "draft" | "published" | "archived";
   created_at: string;
   updated_at: string;
@@ -29,6 +30,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
     title: "",
     slug: "",
     author: "",
+    body: "",
     status: "draft",
   });
 
@@ -45,6 +47,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
           title: article.title || "",
           slug: article.slug || "",
           author: article.author || "",
+          body: article.body || "",
           status: article.status || "draft",
         });
       } catch (err) {
@@ -200,6 +203,23 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
               placeholder="Author name and title"
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+            />
+          </div>
+
+          {/* Body */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Article Body
+            </label>
+            <p className="text-sm text-gray-500 mb-3">
+              Write your article content here. You can use HTML tags for formatting (e.g., &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;).
+            </p>
+            <textarea
+              value={form.body}
+              onChange={(e) => setForm({ ...form, body: e.target.value })}
+              placeholder="Write your article content here..."
+              rows={20}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y font-mono text-sm"
             />
           </div>
 
