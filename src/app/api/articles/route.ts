@@ -8,7 +8,7 @@ const sql = neon(process.env.DATABASE_URL!);
 export async function GET() {
   try {
     const articles = await sql`
-      SELECT id, headline, subheadline, title, slug, author, status, created_at, updated_at
+      SELECT id, headline, subheadline, title, slug, author, category, status, created_at, updated_at
       FROM content_articles
       ORDER BY updated_at DESC
     `;
@@ -22,10 +22,10 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const reqBody = await request.json();
-    const { headline, subheadline, title, slug, author, body, status } = reqBody;
+    const { headline, subheadline, title, slug, author, body, category, status } = reqBody;
 
     const result = await sql`
-      INSERT INTO content_articles (headline, subheadline, title, slug, author, body, status)
+      INSERT INTO content_articles (headline, subheadline, title, slug, author, body, category, status)
       VALUES (
         ${headline}, 
         ${subheadline || null}, 
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
         ${slug}, 
         ${author}, 
         ${body || null},
+        ${category || "Market Analysis"},
         ${status || "draft"}
       )
       RETURNING id

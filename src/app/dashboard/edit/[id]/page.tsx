@@ -13,10 +13,20 @@ type Article = {
   slug: string;
   author: string;
   body: string | null;
+  category: string | null;
   status: "draft" | "published" | "archived";
   created_at: string;
   updated_at: string;
 };
+
+const CATEGORIES = [
+  "Market Analysis",
+  "Saving Money",
+  "Buying Guide",
+  "Consumer Guide",
+  "Price Analysis",
+  "Company Profile",
+];
 
 export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -32,6 +42,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
     slug: "",
     author: "",
     body: "",
+    category: "Market Analysis",
     status: "draft",
   });
 
@@ -49,6 +60,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
           slug: article.slug || "",
           author: article.author || "",
           body: article.body || "",
+          category: article.category || "Market Analysis",
           status: article.status || "draft",
         });
       } catch (err) {
@@ -192,19 +204,35 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             </div>
           </div>
 
-          {/* Author */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Author
-            </label>
-            <input
-              type="text"
-              value={form.author}
-              onChange={(e) => setForm({ ...form, author: e.target.value })}
-              placeholder="Author name and title"
-              required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-            />
+          {/* Author & Category */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Author
+              </label>
+              <input
+                type="text"
+                value={form.author}
+                onChange={(e) => setForm({ ...form, author: e.target.value })}
+                placeholder="Author name and title"
+                required
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Body */}

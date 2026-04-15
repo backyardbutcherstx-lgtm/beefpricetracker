@@ -3,6 +3,9 @@ import PriceCard from "@/components/PriceCard";
 import { OrganizationSchema } from "@/components/JsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL!);
 
 export const metadata: Metadata = {
   title: "Beef Prices Today | Live USDA Price Tracker 2026",
@@ -96,34 +99,39 @@ const quickReads = [
   },
 ];
 
-const featuredArticles = [
-  {
-  category: "Price Analysis",
-  title: "Ground Beef Price by State: March 2026 Regional Breakdown",
-  desc: "From $5.89/lb in Nebraska to $8.12/lb in Hawaii, where you live dramatically impacts what you pay. See every state ranked.",
-  image: "/images/article-price-map.jpg",
-  href: "/prices",
-  },
-  {
-  category: "Company Profile",
-  title: "Backyard Butchers: Independent Review & Consumer Analysis",
-  desc: "We analyze the $40M pop-up meat retailer's pricing, quality, customer satisfaction data, and how their model compares to subscription boxes.",
-  image: "/images/article-butcher-shop.jpg",
-  href: "/reviews",
-  },
-  {
-  category: "Consumer Guide",
-  title: "How to Buy Meat in Bulk Without Getting Ripped Off",
-  desc: "Warehouse clubs, online subscriptions, pop-up events, and farm-direct: we break down the real cost per pound for each channel.",
-  image: "/images/article-consumer-guide.jpg",
-  href: "/guides",
-  },
-];
+type Article = {
+  id: string;
+  headline: string;
+  subheadline: string | null;
+  title: string;
+  slug: string;
+  author: string;
+  category: string;
+  created_at: string;
+};
+
+async function getLatestArticles(): Promise<Article[]> {
+  try {
+    const articles = await sql`
+      SELECT id, headline, subheadline, title, slug, author, category, created_at
+      FROM content_articles 
+      WHERE status = 'published'
+      ORDER BY created_at DESC
+      LIMIT 6
+    `;
+    return articles as Article[];
+  } catch {
+    return [];
+  }
+}
 
 // priceTableData is now built dynamically from live FRED data in the component
 
 export default async function HomePage() {
-  const prices = await fetchAllPrices();
+  const [prices, articles] = await Promise.all([
+    fetchAllPrices(),
+    getLatestArticles()
+  ]);
   const latestDate = getLatestDate(prices);
   
   // Build hero price cards from live FRED data
@@ -545,40 +553,54 @@ export default async function HomePage() {
       {/* Featured Articles Section */}
       <section className="bg-muted py-12 px-10">
         <div className="max-w-[1100px] mx-auto">
-          <h2 className="text-2xl font-bold text-navy mb-6">
-            Latest from BeefPriceTracker
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredArticles.map((article) => (
-              <Link
-                key={article.title}
-                href={article.href}
-                className="bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-              >
-                <div className="h-[140px] overflow-hidden">
-                  <img 
-                    src={article.image} 
-                    alt={article.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-5">
-                  <p className="font-sans text-xs text-navy uppercase tracking-wider font-bold mb-1.5">
-                    {article.category}
-                  </p>
-                  <h3 className="text-base font-bold text-foreground mb-2 leading-snug">
-                    {article.title}
-                  </h3>
-                  <p className="font-sans text-sm text-muted-foreground leading-relaxed">
-                    {article.desc}
-                  </p>
-                  <span className="inline-block mt-3 font-sans text-sm text-navy font-semibold">
-                    Read full {article.category.toLowerCase()} →
-                  </span>
-                </div>
-              </Link>
-            ))}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-navy">
+              Latest from BeefPriceTracker
+            </h2>
+            <Link 
+              href="/articles" 
+              className="font-sans text-sm text-navy font-semibold hover:underline"
+            >
+              View all articles →
+            </Link>
           </div>
+          {articles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {articles.slice(0, 3).map((article) => (
+                <Link
+                  key={article.id}
+                  href={`/articles/${article.slug}`}
+                  className="bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="h-[140px] overflow-hidden bg-gradient-to-br from-navy to-navy-dark flex items-center justify-center">
+                    <span className="text-gold text-4xl font-bold opacity-20">BPT</span>
+                  </div>
+                  <div className="p-5">
+                    <p className="font-sans text-xs text-navy uppercase tracking-wider font-bold mb-1.5">
+                      {article.category}
+                    </p>
+                    <h3 className="text-base font-bold text-foreground mb-2 leading-snug">
+                      {article.headline}
+                    </h3>
+                    <p className="font-sans text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      {article.subheadline}
+                    </p>
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className="font-sans text-xs text-muted-foreground">
+                        {article.author}
+                      </span>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="font-sans text-xs text-muted-foreground">
+                        {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">No articles available yet.</p>
+          )}
         </div>
       </section>
     </>

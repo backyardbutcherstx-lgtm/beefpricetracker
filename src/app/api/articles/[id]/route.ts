@@ -65,6 +65,10 @@ export async function PATCH(
       updates.push("body");
       values.push(body.body);
     }
+    if (body.category !== undefined) {
+      updates.push("category");
+      values.push(body.category);
+    }
 
     if (updates.length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
@@ -89,6 +93,7 @@ export async function PATCH(
           slug = COALESCE(${body.slug}, slug),
           author = COALESCE(${body.author}, author),
           body = COALESCE(${body.body}, body),
+          category = COALESCE(${body.category}, category),
           status = COALESCE(${body.status}, status),
           updated_at = NOW()
         WHERE id = ${id}

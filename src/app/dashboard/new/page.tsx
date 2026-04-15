@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import RichTextEditor from "@/components/RichTextEditor";
 
+const CATEGORIES = [
+  "Market Analysis",
+  "Saving Money",
+  "Buying Guide",
+  "Consumer Guide",
+  "Price Analysis",
+  "Company Profile",
+];
+
 export default function NewArticlePage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -17,6 +26,7 @@ export default function NewArticlePage() {
     slug: "",
     author: "",
     body: "",
+    category: "Market Analysis",
     status: "draft",
   });
 
@@ -161,19 +171,35 @@ export default function NewArticlePage() {
             </div>
           </div>
 
-          {/* Author */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Author
-            </label>
-            <input
-              type="text"
-              value={form.author}
-              onChange={(e) => setForm({ ...form, author: e.target.value })}
-              placeholder="Author name and title"
-              required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-            />
+          {/* Author & Category */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Author
+              </label>
+              <input
+                type="text"
+                value={form.author}
+                onChange={(e) => setForm({ ...form, author: e.target.value })}
+                placeholder="Author name and title"
+                required
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Body */}
