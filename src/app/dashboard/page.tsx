@@ -175,7 +175,14 @@ export default function ContentDashboard() {
                       {formatDate(article.updated_at)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/articles/${article.slug}`}
+                          target="_blank"
+                          className="text-sm text-teal hover:text-teal/80 transition"
+                        >
+                          View
+                        </Link>
                         <Link
                           href={`/dashboard/edit/${article.id}`}
                           className="text-sm text-navy hover:text-gold transition"
