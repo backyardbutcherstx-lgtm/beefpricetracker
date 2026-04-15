@@ -38,13 +38,13 @@ export default function ContentDashboard() {
     archived: articles.filter((a) => a.status === "archived").length,
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this article?")) return;
     await fetch(`/api/articles/${id}`, { method: "DELETE" });
     mutate();
   };
 
-  const handleStatusChange = async (id: number, status: string) => {
+  const handleStatusChange = async (id: string, status: string) => {
     await fetch(`/api/articles/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
