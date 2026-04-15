@@ -5,15 +5,15 @@ import Link from "next/link";
 import useSWR from "swr";
 
 type Article = {
-  id: number;
+  id: string;
+  headline: string;
+  subheadline: string | null;
   title: string;
   slug: string;
-  status: "draft" | "published" | "archived";
-  category: string;
   author: string;
+  status: "draft" | "published" | "archived";
   created_at: string;
   updated_at: string;
-  published_at: string | null;
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -132,8 +132,7 @@ export default function ContentDashboard() {
             <table className="w-full">
               <thead className="bg-gray-50 text-left text-xs uppercase text-gray-500 tracking-wider">
                 <tr>
-                  <th className="px-6 py-3 font-semibold">Title</th>
-                  <th className="px-6 py-3 font-semibold">Category</th>
+                  <th className="px-6 py-3 font-semibold">Headline</th>
                   <th className="px-6 py-3 font-semibold">Author</th>
                   <th className="px-6 py-3 font-semibold">Status</th>
                   <th className="px-6 py-3 font-semibold">Updated</th>
@@ -148,12 +147,9 @@ export default function ContentDashboard() {
                         href={`/dashboard/edit/${article.id}`}
                         className="font-medium text-navy hover:text-gold transition"
                       >
-                        {article.title}
+                        {article.headline}
                       </Link>
                       <p className="text-xs text-gray-400 mt-0.5">/{article.slug}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{article.category}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-sm text-gray-600">{article.author}</span>

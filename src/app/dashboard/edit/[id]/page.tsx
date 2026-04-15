@@ -5,16 +5,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type Article = {
-  id: number;
+  id: string;
+  headline: string;
+  subheadline: string | null;
   title: string;
   slug: string;
-  content: string;
-  excerpt: string | null;
-  status: "draft" | "published" | "archived";
-  category: string;
   author: string;
-  meta_title: string | null;
-  meta_description: string | null;
+  status: "draft" | "published" | "archived";
+  created_at: string;
+  updated_at: string;
 };
 
 export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
@@ -25,14 +24,11 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
+    headline: "",
+    subheadline: "",
     title: "",
     slug: "",
-    content: "",
-    excerpt: "",
-    category: "Price Analysis",
     author: "",
-    meta_title: "",
-    meta_description: "",
     status: "draft",
   });
 
@@ -44,15 +40,12 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         const data = await res.json();
         const article: Article = data.article;
         setForm({
-          title: article.title,
-          slug: article.slug,
-          content: article.content,
-          excerpt: article.excerpt || "",
-          category: article.category,
-          author: article.author,
-          meta_title: article.meta_title || "",
-          meta_description: article.meta_description || "",
-          status: article.status,
+          headline: article.headline || "",
+          subheadline: article.subheadline || "",
+          title: article.title || "",
+          slug: article.slug || "",
+          author: article.author || "",
+          status: article.status || "draft",
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load article");
@@ -133,130 +126,81 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
+          {/* Headline */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title
+              Headline
             </label>
             <input
               type="text"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder="Enter article title..."
+              value={form.headline}
+              onChange={(e) => setForm({ ...form, headline: e.target.value })}
+              placeholder="Enter article headline..."
               required
               className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
             />
           </div>
 
-          {/* Slug */}
+          {/* Subheadline */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              URL Slug
-            </label>
-            <div className="flex items-center">
-              <span className="text-gray-400 mr-1">/articles/</span>
-              <input
-                type="text"
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                placeholder="article-slug"
-                required
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-              />
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Content
+              Subheadline
             </label>
             <textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              placeholder="Write your article content here..."
-              rows={15}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y font-mono text-sm"
-            />
-          </div>
-
-          {/* Excerpt */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Excerpt
-            </label>
-            <textarea
-              value={form.excerpt}
-              onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-              placeholder="Brief summary for article cards and previews..."
+              value={form.subheadline}
+              onChange={(e) => setForm({ ...form, subheadline: e.target.value })}
+              placeholder="Brief summary or teaser for the article..."
               rows={3}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
             />
           </div>
 
-          {/* Category & Author */}
+          {/* Title & Slug */}
           <div className="grid grid-cols-2 gap-6">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-              >
-                <option value="Price Analysis">Price Analysis</option>
-                <option value="Consumer Guide">Consumer Guide</option>
-                <option value="Company Profile">Company Profile</option>
-                <option value="Market Report">Market Report</option>
-                <option value="Industry News">Industry News</option>
-              </select>
-            </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Author
+                SEO Title
               </label>
               <input
                 type="text"
-                value={form.author}
-                onChange={(e) => setForm({ ...form, author: e.target.value })}
-                placeholder="Author name"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                placeholder="SEO-optimized title"
                 required
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
               />
             </div>
-          </div>
-
-          {/* SEO */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-navy mb-4">SEO Settings</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Meta Title
-                </label>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                URL Slug
+              </label>
+              <div className="flex items-center">
+                <span className="text-gray-400 mr-1">/articles/</span>
                 <input
                   type="text"
-                  value={form.meta_title}
-                  onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
-                  placeholder="SEO title (defaults to article title)"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Meta Description
-                </label>
-                <textarea
-                  value={form.meta_description}
-                  onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
-                  placeholder="SEO description for search results..."
-                  rows={2}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  placeholder="article-slug"
+                  required
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
                 />
               </div>
             </div>
+          </div>
+
+          {/* Author */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Author
+            </label>
+            <input
+              type="text"
+              value={form.author}
+              onChange={(e) => setForm({ ...form, author: e.target.value })}
+              placeholder="Author name and title"
+              required
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+            />
           </div>
 
           {/* Status */}
