@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import RichTextEditor from "@/components/RichTextEditor";
 
 export default function NewArticlePage() {
   const router = useRouter();
@@ -176,19 +177,13 @@ export default function NewArticlePage() {
           </div>
 
           {/* Body */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Article Body
             </label>
-            <p className="text-sm text-gray-500 mb-3">
-              Write your article content here. You can use HTML tags for formatting (e.g., &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;).
-            </p>
-            <textarea
+            <RichTextEditor
               value={form.body}
-              onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="Write your article content here..."
-              rows={20}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y font-mono text-sm"
+              onChange={(value) => setForm({ ...form, body: value })}
             />
           </div>
         </form>

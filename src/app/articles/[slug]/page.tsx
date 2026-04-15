@@ -2,6 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import ArticleBody from "@/components/ArticleBody";
 
 const sql = neon(process.env.DATABASE_URL!);
 
@@ -85,18 +86,13 @@ export default async function ArticlePage({ params }: Props) {
 
       {/* Article Content */}
       <article className="max-w-[800px] mx-auto px-6 py-12">
-        <div className="prose prose-lg max-w-none">
-          {article.body ? (
-            <div 
-              className="text-foreground leading-relaxed whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ __html: article.body }}
-            />
-          ) : (
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              Article content coming soon...
-            </p>
-          )}
-        </div>
+        {article.body ? (
+          <ArticleBody content={article.body} />
+        ) : (
+          <p className="text-muted-foreground leading-relaxed text-lg">
+            Article content coming soon...
+          </p>
+        )}
 
         {/* Article Footer */}
         <div className="mt-12 pt-8 border-t border-border">
