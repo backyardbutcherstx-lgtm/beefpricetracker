@@ -14,25 +14,8 @@ export async function POST(request: Request) {
     }
 
     if (password === adminPassword) {
-      // Build cookie string manually
-      const isProduction = process.env.NODE_ENV === "production";
-      const maxAge = 60 * 60 * 24 * 7; // 7 days
-      const cookieValue = [
-        `dashboard_auth=authenticated`,
-        `Path=/`,
-        `Max-Age=${maxAge}`,
-        `HttpOnly`,
-        `SameSite=Lax`,
-        isProduction ? `Secure` : "",
-      ].filter(Boolean).join("; ");
-      
-      return new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Set-Cookie": cookieValue,
-        },
-      });
+      // Return the token - middleware will handle setting the cookie
+      return NextResponse.json({ success: true, token: adminPassword });
     }
 
     return NextResponse.json(

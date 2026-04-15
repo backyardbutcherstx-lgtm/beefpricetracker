@@ -2,24 +2,40 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+
   // Only protect dashboard routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    const authCookie = request.cookies.get("dashboard_auth");
+  if (pathname.startsWith("/dashboard")) {
+    const authCookie = request.cookies.get("dashboard_token")?.value;
+    const urlToken = searchParams.get("token");
+    const expectedToken = process.env.DASHBOARD_PASSWORD;
     
-    console.log("[v0] Middleware path:", request.nextUrl.pathname);
-    console.log("[v0] Middleware authCookie:", JSON.stringify(authCookie));
-    console.log("[v0] All cookies:", JSON.stringify(request.cookies.getAll()));
-    
-    // If not authenticated and not on login page, redirect to login
-    if (!authCookie?.value && !request.nextUrl.pathname.startsWith("/dashboard/login")) {
-      console.log("[v0] Redirecting to login - no auth cookie");
-      return NextResponse.redirect(new URL("/dashboard/login", request.url));
+    // If URL has valid token, set cookie and redirect to clean URL
+    if (urlToken && urlToken === expectedToken) {
+      const cleanUrl = new URL(pathname, request.url);
+      cleanUrl.searchParams.delete("token");
+      const response = NextResponse.redirect(cleanUrl);
+      response.cookies.set("dashboard_token", expectedToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+      return response;
     }
     
-    // If authenticated and on login page, redirect to dashboard
-    if (authCookie?.value && request.nextUrl.pathname === "/dashboard/login") {
-      console.log("[v0] Redirecting to dashboard - already authenticated");
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Skip auth check for login page
+    if (pathname === "/dashboard/login") {
+      // If already authenticated, redirect to dashboard
+      if (authCookie === expectedToken) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+      return NextResponse.next();
+    }
+    
+    // For all other dashboard routes, require auth
+    if (authCookie !== expectedToken) {
+      return NextResponse.redirect(new URL("/dashboard/login", request.url));
     }
   }
 

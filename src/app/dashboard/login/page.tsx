@@ -22,8 +22,9 @@ export default function DashboardLoginPage() {
       });
 
       if (response.ok) {
-        // Use hard redirect to ensure cookie is read by middleware
-        window.location.href = "/dashboard";
+        const data = await response.json();
+        // Redirect with token in URL - middleware will set cookie and clean URL
+        window.location.href = `/dashboard?token=${encodeURIComponent(data.token)}`;
         return;
       } else {
         const data = await response.json();
