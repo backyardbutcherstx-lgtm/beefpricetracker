@@ -11,7 +11,7 @@ export async function GET(
   
   try {
     const articles = await sql`
-      SELECT * FROM content_articles WHERE id = ${parseInt(id)}
+      SELECT * FROM content_articles WHERE id = ${id}
     `;
     
     if (articles.length === 0) {
@@ -76,7 +76,7 @@ export async function PATCH(
       await sql`
         UPDATE content_articles 
         SET status = ${body.status}, updated_at = NOW()
-        WHERE id = ${parseInt(id)}
+        WHERE id = ${id}
       `;
     } else {
       // Full update
@@ -91,7 +91,7 @@ export async function PATCH(
           body = COALESCE(${body.body}, body),
           status = COALESCE(${body.status}, status),
           updated_at = NOW()
-        WHERE id = ${parseInt(id)}
+        WHERE id = ${id}
       `;
     }
 
@@ -109,7 +109,7 @@ export async function DELETE(
   const { id } = await params;
   
   try {
-    await sql`DELETE FROM content_articles WHERE id = ${parseInt(id)}`;
+    await sql`DELETE FROM content_articles WHERE id = ${id}`;
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting article:", error);
