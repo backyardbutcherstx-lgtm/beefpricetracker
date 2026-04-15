@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -15,9 +14,12 @@ export async function POST(request: Request) {
     }
 
     if (password === adminPassword) {
-      // Use the cookies() API which works better with Next.js middleware
-      const cookieStore = await cookies();
-      cookieStore.set("dashboard_auth", "authenticated", {
+      const response = NextResponse.json({ success: true });
+      
+      // Set cookie on the response - this is the correct way in Route Handlers
+      response.cookies.set({
+        name: "dashboard_auth",
+        value: "authenticated",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
         path: "/",
       });
       
-      return NextResponse.json({ success: true });
+      return response;
     }
 
     return NextResponse.json(
