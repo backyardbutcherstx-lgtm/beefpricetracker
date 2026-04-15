@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
 type Article = {
@@ -19,12 +20,19 @@ type Article = {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ContentDashboard() {
+  const router = useRouter();
   const { data, error, isLoading, mutate } = useSWR<{ articles: Article[] }>(
     "/api/articles",
     fetcher
   );
 
   const [filter, setFilter] = useState<"all" | "draft" | "published" | "archived">("all");
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/dashboard/login");
+    router.refresh();
+  };
 
   const articles = data?.articles || [];
   const filteredArticles = filter === "all" 
@@ -72,12 +80,20 @@ export default function ContentDashboard() {
             </Link>
             <h1 className="text-xl font-bold">Content Dashboard</h1>
           </div>
-          <Link
-            href="/dashboard/new"
-            className="bg-gold hover:bg-gold/90 text-navy font-semibold px-4 py-2 rounded text-sm transition"
-          >
-            + New Article
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard/new"
+              className="bg-gold hover:bg-gold/90 text-navy font-semibold px-4 py-2 rounded text-sm transition"
+            >
+              + New Article
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="text-white/70 hover:text-white text-sm transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
