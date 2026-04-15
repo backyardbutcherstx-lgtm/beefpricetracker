@@ -6,10 +6,6 @@ export async function POST(request: Request) {
     
     const adminPassword = process.env.DASHBOARD_PASSWORD;
     
-    console.log("[v0] DASHBOARD_PASSWORD exists:", !!adminPassword);
-    console.log("[v0] Password provided:", !!password);
-    console.log("[v0] Password match:", password === adminPassword);
-    
     if (!adminPassword) {
       return NextResponse.json(
         { error: "Dashboard password not configured. Please set DASHBOARD_PASSWORD in environment variables." },

@@ -22,8 +22,9 @@ export default function DashboardLoginPage() {
       });
 
       if (response.ok) {
-        router.push("/dashboard");
-        router.refresh();
+        // Use hard redirect to ensure cookie is read by middleware
+        window.location.href = "/dashboard";
+        return;
       } else {
         const data = await response.json();
         setError(data.error || "Invalid password");
