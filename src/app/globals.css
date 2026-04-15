@@ -13,14 +13,15 @@
   
   /* Semantic Colors */
   --color-background: #ffffff;
+  --color-background-warm: #f5f4f0;
   --color-foreground: #1a1a1a;
   --color-muted: #f4f7fa;
   --color-muted-foreground: #666666;
   --color-border: #e8e8e8;
   
   /* Price Change Colors */
-  --color-price-up: #e74c3c;
-  --color-price-down: #2ecc71;
+  --color-price-up: #c0392b;
+  --color-price-down: #1e8449;
   
   /* Trust Score Colors */
   --color-score-green: #1e8449;
