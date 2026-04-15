@@ -13,6 +13,7 @@ type Article = {
   slug: string;
   author: string;
   status: string;
+  body: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -85,17 +86,16 @@ export default async function ArticlePage({ params }: Props) {
       {/* Article Content */}
       <article className="max-w-[800px] mx-auto px-6 py-12">
         <div className="prose prose-lg max-w-none">
-          <p className="text-muted-foreground leading-relaxed text-lg">
-            {article.subheadline || "Article content coming soon..."}
-          </p>
-          
-          {/* Placeholder for full article content */}
-          <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-border">
-            <p className="text-sm text-muted-foreground">
-              Full article content would be displayed here. The current database schema stores headline, subheadline, title, slug, and author. 
-              To add full article body content, consider adding a <code className="bg-gray-200 px-1 rounded">body</code> column to the content_articles table.
+          {article.body ? (
+            <div 
+              className="text-foreground leading-relaxed whitespace-pre-wrap"
+              dangerouslySetInnerHTML={{ __html: article.body }}
+            />
+          ) : (
+            <p className="text-muted-foreground leading-relaxed text-lg">
+              Article content coming soon...
             </p>
-          </div>
+          )}
         </div>
 
         {/* Article Footer */}
