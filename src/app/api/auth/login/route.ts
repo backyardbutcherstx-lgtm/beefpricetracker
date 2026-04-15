@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -14,10 +15,9 @@ export async function POST(request: Request) {
     }
 
     if (password === adminPassword) {
-      const response = NextResponse.json({ success: true });
-      
-      // Set auth cookie - expires in 7 days
-      response.cookies.set("dashboard_auth", "authenticated", {
+      // Use the cookies() API which works better with Next.js middleware
+      const cookieStore = await cookies();
+      cookieStore.set("dashboard_auth", "authenticated", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         path: "/",
       });
       
-      return response;
+      return NextResponse.json({ success: true });
     }
 
     return NextResponse.json(
