@@ -14,20 +14,25 @@ export async function POST(request: Request) {
     }
 
     if (password === adminPassword) {
-      const response = NextResponse.json({ success: true });
+      // Build cookie string manually
+      const isProduction = process.env.NODE_ENV === "production";
+      const maxAge = 60 * 60 * 24 * 7; // 7 days
+      const cookieValue = [
+        `dashboard_auth=authenticated`,
+        `Path=/`,
+        `Max-Age=${maxAge}`,
+        `HttpOnly`,
+        `SameSite=Lax`,
+        isProduction ? `Secure` : "",
+      ].filter(Boolean).join("; ");
       
-      // Set cookie on the response - this is the correct way in Route Handlers
-      response.cookies.set({
-        name: "dashboard_auth",
-        value: "authenticated",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        path: "/",
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Set-Cookie": cookieValue,
+        },
       });
-      
-      return response;
     }
 
     return NextResponse.json(
