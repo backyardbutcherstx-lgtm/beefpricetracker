@@ -110,6 +110,18 @@ type Article = {
   created_at: string;
 };
 
+function getArticleImage(category: string): string {
+  const categoryImages: Record<string, string> = {
+    "Market Analysis": "/images/article-market-analysis.jpg",
+    "Saving Money": "/images/article-saving-money.jpg",
+    "Buying Guide": "/images/article-buying-guide.jpg",
+    "Consumer Guide": "/images/article-consumer-guide.jpg",
+    "Price Analysis": "/images/article-price-analysis.jpg",
+    "Company Profile": "/images/article-buying-guide.jpg",
+  };
+  return categoryImages[category] || "/images/article-market-analysis.jpg";
+}
+
 async function getLatestArticles(): Promise<Article[]> {
   try {
     const articles = await sql`
@@ -572,8 +584,12 @@ export default async function HomePage() {
                   href={`/articles/${article.slug}`}
                   className="bg-background rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
                 >
-                  <div className="h-[140px] overflow-hidden bg-gradient-to-br from-navy to-navy-dark flex items-center justify-center">
-                    <span className="text-gold text-4xl font-bold opacity-20">BPT</span>
+                  <div className="h-[140px] overflow-hidden">
+                    <img 
+                      src={getArticleImage(article.category)}
+                      alt={article.headline}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="p-5">
                     <p className="font-sans text-xs text-navy uppercase tracking-wider font-bold mb-1.5">

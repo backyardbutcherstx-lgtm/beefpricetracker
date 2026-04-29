@@ -57,6 +57,15 @@ const categoryColors: Record<string, string> = {
   "Price Analysis": "bg-price-up text-white",
 };
 
+const categoryImages: Record<string, string> = {
+  "Market Analysis": "/images/article-market-analysis.jpg",
+  "Saving Money": "/images/article-saving-money.jpg",
+  "Buying Guide": "/images/article-buying-guide.jpg",
+  "Consumer Guide": "/images/article-consumer-guide.jpg",
+  "Price Analysis": "/images/article-price-analysis.jpg",
+  "Company Profile": "/images/article-buying-guide.jpg",
+};
+
 export default async function ArticlesPage({
   searchParams,
 }: {
@@ -139,8 +148,12 @@ export default async function ArticlesPage({
                 className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-border"
               >
                 {/* Article Thumbnail */}
-                <div className="h-[160px] overflow-hidden bg-gradient-to-br from-navy to-navy-dark flex items-center justify-center relative">
-                  <span className="text-gold text-5xl font-bold opacity-20">BPT</span>
+                <div className="h-[160px] overflow-hidden relative">
+                  <img 
+                    src={categoryImages[article.category] || "/images/article-market-analysis.jpg"}
+                    alt={article.headline}
+                    className="w-full h-full object-cover"
+                  />
                   <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold uppercase tracking-wide ${categoryColors[article.category] || "bg-navy text-white"}`}>
                     {article.category}
                   </div>
