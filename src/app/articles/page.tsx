@@ -19,13 +19,14 @@ type Article = {
   slug: string;
   author: string;
   category: string;
+  image_url: string | null;
   created_at: string;
 };
 
 async function getArticles(): Promise<Article[]> {
   try {
     const articles = await sql`
-      SELECT id, headline, subheadline, title, slug, author, category, created_at
+      SELECT id, headline, subheadline, title, slug, author, category, image_url, created_at
       FROM content_articles 
       WHERE status = 'published'
       ORDER BY created_at DESC
@@ -150,7 +151,7 @@ export default async function ArticlesPage({
                 {/* Article Thumbnail */}
                 <div className="h-[160px] overflow-hidden relative">
                   <img 
-                    src={categoryImages[article.category] || "/images/article-market-analysis.jpg"}
+                    src={article.image_url || categoryImages[article.category] || "/images/article-market-analysis.jpg"}
                     alt={article.headline}
                     className="w-full h-full object-cover"
                   />

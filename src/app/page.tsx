@@ -107,6 +107,7 @@ type Article = {
   slug: string;
   author: string;
   category: string;
+  image_url: string | null;
   created_at: string;
 };
 
@@ -125,16 +126,14 @@ function getArticleImage(category: string): string {
 async function getLatestArticles(): Promise<Article[]> {
   try {
     const articles = await sql`
-      SELECT id, headline, subheadline, title, slug, author, category, created_at
+      SELECT id, headline, subheadline, title, slug, author, category, image_url, created_at
       FROM content_articles 
       WHERE status = 'published'
       ORDER BY created_at DESC
       LIMIT 6
     `;
-    console.log("[v0] Fetched articles count:", articles.length);
     return articles as Article[];
-  } catch (err) {
-    console.log("[v0] Error fetching articles:", err);
+  } catch {
     return [];
   }
 }
@@ -588,7 +587,7 @@ export default async function HomePage() {
                 >
                   <div className="h-[140px] overflow-hidden">
                     <img 
-                      src={getArticleImage(article.category)}
+                      src={article.image_url || getArticleImage(article.category)}
                       alt={article.headline}
                       className="w-full h-full object-cover"
                     />

@@ -14,6 +14,7 @@ type Article = {
   author: string;
   body: string | null;
   category: string | null;
+  image_url: string | null;
   status: "draft" | "published" | "archived";
   created_at: string;
   updated_at: string;
@@ -43,6 +44,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
     author: "",
     body: "",
     category: "Market Analysis",
+    image_url: "",
     status: "draft",
   });
 
@@ -61,6 +63,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
           author: article.author || "",
           body: article.body || "",
           category: article.category || "Market Analysis",
+          image_url: article.image_url || "",
           status: article.status || "draft",
         });
       } catch (err) {
@@ -233,6 +236,36 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Featured Image */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Featured Image URL
+            </label>
+            <input
+              type="url"
+              value={form.image_url}
+              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Enter a URL for the article&apos;s featured image. Leave blank to use a default category image.
+            </p>
+            {form.image_url && (
+              <div className="mt-4">
+                <p className="text-xs text-gray-500 mb-2">Preview:</p>
+                <img 
+                  src={form.image_url} 
+                  alt="Featured image preview" 
+                  className="max-h-40 rounded-lg object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Body */}
