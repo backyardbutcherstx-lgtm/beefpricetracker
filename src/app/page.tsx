@@ -131,8 +131,10 @@ async function getLatestArticles(): Promise<Article[]> {
       ORDER BY created_at DESC
       LIMIT 6
     `;
+    console.log("[v0] Fetched articles count:", articles.length);
     return articles as Article[];
-  } catch {
+  } catch (err) {
+    console.log("[v0] Error fetching articles:", err);
     return [];
   }
 }
