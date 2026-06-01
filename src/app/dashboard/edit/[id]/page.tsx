@@ -8,6 +8,9 @@ type Article = {
   id: string;
   headline: string;
   subheadline: string | null;
+  body: string | null;
+  category: string | null;
+  image_url: string | null;
   title: string;
   slug: string;
   author: string;
@@ -26,6 +29,9 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
   const [form, setForm] = useState({
     headline: "",
     subheadline: "",
+    body: "",
+    category: "",
+    image_url: "",
     title: "",
     slug: "",
     author: "",
@@ -42,6 +48,9 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         setForm({
           headline: article.headline || "",
           subheadline: article.subheadline || "",
+          body: article.body || "",
+          category: article.category || "",
+          image_url: article.image_url || "",
           title: article.title || "",
           slug: article.slug || "",
           author: article.author || "",
@@ -100,6 +109,32 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             <h1 className="text-xl font-bold">Edit Article</h1>
           </div>
           <div className="flex items-center gap-2">
+            {form.slug && (
+              <a
+                href={`/articles/${form.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2 rounded text-sm transition"
+              >
+                View Live
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M15 3h6v6" />
+                  <path d="M10 14 21 3" />
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </a>
+            )}
             <button
               onClick={(e) => handleSubmit(e, "draft")}
               disabled={saving}
@@ -152,6 +187,51 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
               placeholder="Brief summary or teaser for the article..."
               rows={3}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
+            />
+          </div>
+
+          {/* Category & Image */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <input
+                type="text"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                placeholder="e.g. Market Analysis, Consumer Guide"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hero Image URL
+              </label>
+              <input
+                type="text"
+                value={form.image_url}
+                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                placeholder="/images/example.png"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Article Body
+            </label>
+            <p className="text-xs text-gray-400 mb-3">
+              Supports HTML tags such as &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, and &lt;strong&gt;.
+            </p>
+            <textarea
+              value={form.body}
+              onChange={(e) => setForm({ ...form, body: e.target.value })}
+              placeholder="Write the full article content here..."
+              rows={20}
+              className="w-full px-4 py-3 font-mono text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
             />
           </div>
 

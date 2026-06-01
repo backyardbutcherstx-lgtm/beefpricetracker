@@ -9,6 +9,9 @@ type Article = {
   id: string;
   headline: string;
   subheadline: string | null;
+  body: string | null;
+  category: string | null;
+  image_url: string | null;
   title: string;
   slug: string;
   author: string;
@@ -66,6 +69,11 @@ export default async function ArticlePage({ params }: Props) {
           >
             &larr; Back to Home
           </Link>
+          {article.category && (
+            <span className="inline-block bg-gold text-navy-dark text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full mb-4">
+              {article.category}
+            </span>
+          )}
           <h1 className="text-3xl lg:text-4xl font-bold tracking-tight mb-4 leading-tight">
             {article.headline}
           </h1>
@@ -84,19 +92,25 @@ export default async function ArticlePage({ params }: Props) {
 
       {/* Article Content */}
       <article className="max-w-[800px] mx-auto px-6 py-12">
-        <div className="prose prose-lg max-w-none">
+        {article.image_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={article.image_url}
+            alt={article.headline}
+            className="w-full rounded-lg border border-border mb-10 object-cover"
+          />
+        )}
+        {article.body ? (
+          <div
+            className="article-body"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: article.body }}
+          />
+        ) : (
           <p className="text-muted-foreground leading-relaxed text-lg">
             {article.subheadline || "Article content coming soon..."}
           </p>
-          
-          {/* Placeholder for full article content */}
-          <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-border">
-            <p className="text-sm text-muted-foreground">
-              Full article content would be displayed here. The current database schema stores headline, subheadline, title, slug, and author. 
-              To add full article body content, consider adding a <code className="bg-gray-200 px-1 rounded">body</code> column to the content_articles table.
-            </p>
-          </div>
-        </div>
+        )}
 
         {/* Article Footer */}
         <div className="mt-12 pt-8 border-t border-border">

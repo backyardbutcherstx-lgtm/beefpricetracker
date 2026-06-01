@@ -11,7 +11,7 @@ export async function GET(
   
   try {
     const articles = await sql`
-      SELECT * FROM content_articles WHERE id = ${parseInt(id)}
+      SELECT * FROM content_articles WHERE id = ${id}
     `;
     
     if (articles.length === 0) {
@@ -33,62 +33,33 @@ export async function PATCH(
   
   try {
     const body = await request.json();
-    const updates: string[] = [];
-    const values: unknown[] = [];
 
-    // Build dynamic update query
-    if (body.headline !== undefined) {
-      updates.push("headline");
-      values.push(body.headline);
-    }
-    if (body.subheadline !== undefined) {
-      updates.push("subheadline");
-      values.push(body.subheadline);
-    }
-    if (body.title !== undefined) {
-      updates.push("title");
-      values.push(body.title);
-    }
-    if (body.slug !== undefined) {
-      updates.push("slug");
-      values.push(body.slug);
-    }
-    if (body.author !== undefined) {
-      updates.push("author");
-      values.push(body.author);
-    }
-    if (body.status !== undefined) {
-      updates.push("status");
-      values.push(body.status);
-    }
-
-    if (updates.length === 0) {
-      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
-    }
-
-    // For simplicity, handle common update cases
+    // Status-only update (e.g. quick publish/archive toggle)
     if (body.status && Object.keys(body).length === 1) {
-      // Status-only update
       await sql`
         UPDATE content_articles 
         SET status = ${body.status}, updated_at = NOW()
-        WHERE id = ${parseInt(id)}
+        WHERE id = ${id}
       `;
-    } else {
-      // Full update
-      await sql`
-        UPDATE content_articles 
-        SET 
-          headline = COALESCE(${body.headline}, headline),
-          subheadline = COALESCE(${body.subheadline}, subheadline),
-          title = COALESCE(${body.title}, title),
-          slug = COALESCE(${body.slug}, slug),
-          author = COALESCE(${body.author}, author),
-          status = COALESCE(${body.status}, status),
-          updated_at = NOW()
-        WHERE id = ${parseInt(id)}
-      `;
+      return NextResponse.json({ success: true });
     }
+
+    // Full update. COALESCE keeps the existing value when a field is omitted.
+    await sql`
+      UPDATE content_articles 
+      SET 
+        headline = COALESCE(${body.headline ?? null}, headline),
+        subheadline = COALESCE(${body.subheadline ?? null}, subheadline),
+        body = COALESCE(${body.body ?? null}, body),
+        category = COALESCE(${body.category ?? null}, category),
+        image_url = COALESCE(${body.image_url ?? null}, image_url),
+        title = COALESCE(${body.title ?? null}, title),
+        slug = COALESCE(${body.slug ?? null}, slug),
+        author = COALESCE(${body.author ?? null}, author),
+        status = COALESCE(${body.status ?? null}, status),
+        updated_at = NOW()
+      WHERE id = ${id}
+    `;
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -104,7 +75,7 @@ export async function DELETE(
   const { id } = await params;
   
   try {
-    await sql`DELETE FROM content_articles WHERE id = ${parseInt(id)}`;
+    await sql`DELETE FROM content_articles WHERE id = ${id}`;
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting article:", error);
