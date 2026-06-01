@@ -19,14 +19,17 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { headline, subheadline, title, slug, author, status } = body;
+    const data = await request.json();
+    const { headline, subheadline, body, category, image_url, title, slug, author, status } = data;
 
     const result = await sql`
-      INSERT INTO content_articles (headline, subheadline, title, slug, author, status)
+      INSERT INTO content_articles (headline, subheadline, body, category, image_url, title, slug, author, status)
       VALUES (
         ${headline}, 
         ${subheadline || null}, 
+        ${body || null}, 
+        ${category || null}, 
+        ${image_url || null}, 
         ${title}, 
         ${slug}, 
         ${author}, 

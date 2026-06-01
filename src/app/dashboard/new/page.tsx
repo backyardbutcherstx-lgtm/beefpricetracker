@@ -12,6 +12,9 @@ export default function NewArticlePage() {
   const [form, setForm] = useState({
     headline: "",
     subheadline: "",
+    body: "",
+    category: "",
+    image_url: "",
     title: "",
     slug: "",
     author: "",
@@ -123,6 +126,51 @@ export default function NewArticlePage() {
               placeholder="Brief summary or teaser for the article..."
               rows={3}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
+            />
+          </div>
+
+          {/* Category & Image */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <input
+                type="text"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                placeholder="e.g. Market Analysis, Consumer Guide"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hero Image URL
+              </label>
+              <input
+                type="text"
+                value={form.image_url}
+                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                placeholder="/images/example.png"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+              />
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Article Body
+            </label>
+            <p className="text-xs text-gray-400 mb-3">
+              Supports HTML tags such as &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, and &lt;strong&gt;.
+            </p>
+            <textarea
+              value={form.body}
+              onChange={(e) => setForm({ ...form, body: e.target.value })}
+              placeholder="Write the full article content here..."
+              rows={20}
+              className="w-full px-4 py-3 font-mono text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-y"
             />
           </div>
 
