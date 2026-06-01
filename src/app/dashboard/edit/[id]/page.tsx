@@ -109,6 +109,32 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             <h1 className="text-xl font-bold">Edit Article</h1>
           </div>
           <div className="flex items-center gap-2">
+            {form.slug && (
+              <a
+                href={`/articles/${form.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2 rounded text-sm transition"
+              >
+                View Live
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M15 3h6v6" />
+                  <path d="M10 14 21 3" />
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </a>
+            )}
             <button
               onClick={(e) => handleSubmit(e, "draft")}
               disabled={saving}
