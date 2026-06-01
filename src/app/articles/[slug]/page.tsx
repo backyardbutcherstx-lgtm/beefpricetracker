@@ -97,7 +97,7 @@ export default async function ArticlePage({ params }: Props) {
           <img
             src={article.image_url}
             alt={article.headline}
-            className="w-full rounded-lg border border-border mb-10 object-cover"
+            className="w-full aspect-[16/9] rounded-lg border border-border mb-10 object-cover"
           />
         )}
         {article.body ? (
