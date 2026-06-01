@@ -65,7 +65,7 @@ export default async function ArticlePage({ params }: Props) {
         <div className="max-w-[800px] mx-auto">
           <Link 
             href="/" 
-            className="text-sm text-[#8aa8c4] hover:text-white transition mb-6 inline-block"
+            className="text-sm text-[#8aa8c4] hover:text-white transition mb-6 block w-fit"
           >
             &larr; Back to Home
           </Link>
