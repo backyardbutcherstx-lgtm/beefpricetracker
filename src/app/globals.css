@@ -122,6 +122,32 @@ body {
   color: var(--color-muted-foreground);
 }
 
+/* Brand ranking header with logo */
+.article-body .brand-rank {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.article-body .brand-logo {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: #fff;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.article-body .brand-rank h2 {
+  margin: 0;
+}
+
 /* Featured card image gradients */
 .featured-img-blue {
   background: linear-gradient(135deg, #1a5276, #2980b9);
