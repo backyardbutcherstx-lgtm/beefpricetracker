@@ -144,6 +144,16 @@ body {
   padding: 6px;
 }
 
+.article-body .brand-logo--lg {
+  width: 68px;
+  height: 68px;
+}
+
+.article-body .brand-logo--sm {
+  width: 44px;
+  height: 44px;
+}
+
 .article-body .brand-rank h2 {
   margin: 0;
 }
